@@ -57,6 +57,36 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Register Tournament",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Torneo de Verano\",\n  \"type\": \"elimination\",\n  \"roster\": [\n    { \"id\": 1, \"name\": \"Ana Perez\", \"weight\": 60, \"age\": 25 },\n    { \"id\": 2, \"name\": \"Juan López\", \"weight\": 75, \"age\": 28 }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/register",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
