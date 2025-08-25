@@ -8,9 +8,11 @@ services:
       - "3000:3000"
     networks:
       - internal_net
+      - tournament_net
     environment:
       - PORT=3000
       - MONGO_URI=mongodb://mongo:27017/tournament_designer
+      - KAFKA_BROKER=kafka:9092
     volumes:
       - .:/app
       - /app/node_modules
@@ -35,3 +37,5 @@ volumes:
 networks:
   internal_net:
     driver: bridge
+  tournament_net:
+    external: true

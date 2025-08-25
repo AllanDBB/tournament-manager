@@ -1,9 +1,21 @@
+
+import { Kafka } from 'kafkajs';
 import express from "express";
 import mongoose, { model, Schema } from "mongoose";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/tournament_designer';
+
+
+// Configure Kafka producer
+const kafka = new Kafka({
+  clientId: 'tournament-api',
+  brokers: [process.env.KAFKA_BROKER || 'localhost:9092']
+});
+const producer = kafka.producer();
+const KAFKA_TOPIC = 'tournament-events';
+producer.connect().catch(console.error);
 
 app.use(express.json());
 
@@ -50,7 +62,6 @@ const tournamentSchema = new Schema(
 
 const Tournament = model("Tournament", tournamentSchema);
 
-
 app.post('/upload-data', async (req, res) => {
   const data = req.body;
   // Here you would handle the data upload logic
@@ -67,6 +78,28 @@ app.get('/fetch-tournaments', async (req, res) => {
 
 app.get("/", (req, res) => {
   res.json({ message: "Tournament Designer API is running!" });
+});
+
+
+// Connect Kafka producer when app starts
+app.post('/register', async (req, res) => {
+  try {
+    // Insert tournament in MongoDB
+    const tournament = await Tournament.create(req.body);
+
+    // Send tournament to Kafka
+    await producer.send({
+      topic: KAFKA_TOPIC,
+      messages: [
+        { value: JSON.stringify(tournament) }
+      ]
+    });
+
+    res.status(201).json({ message: 'Tournament registered and enqueued to Kafka', tournament });
+  } catch (error) {
+    console.error('Error in /register:', error);
+    res.status(500).json({ error: 'Failed to register tournament or enqueue to Kafka' });
+  }
 });
 
 app.listen(PORT, () => {
