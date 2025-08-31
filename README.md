@@ -1,4 +1,11 @@
-# Taller paso a paso
+# Taller paso a paso de docker
+
+# Estudiantes:
+- Allan Bolaños Barrientos
+- Alejandro Umaña Miranda
+- Brian Ramirez Arias
+- Santiango Valverde Alvarez
+
 ## Descargamos los repositorios
 Descargamos los repositorios de github, en su última versión, vamos a tener un repositorio de la siguiente manera:
 ```
